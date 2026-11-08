@@ -1,0 +1,20 @@
+﻿# Virtual environment
+.venv/
+venv/
+
+# Python
+__pycache__/
+*.pyc
+
+# Data mentah & hasil proses
+data/raw/*
+data/processed/*
+!data/raw/.gitkeep
+!data/processed/.gitkeep
+
+# Env & kredensial
+.env
+
+# OS
+.DS_Store
+Thumbs.db
