@@ -133,3 +133,18 @@ cardekho-data-pipeline/
 ├── requirements.txt
 ├── NOTES.md               # keputusan desain & catatan eksplorasi
 └── README.md
+
+
+## Failure Handling
+
+Pipeline diuji dengan skenario kegagalan untuk memastikan monitoring & recovery bekerja:
+
+### Skenario: file CSV hilang (typo nama file)
+
+1. `scripts/extract.py` diubah agar mencari `cardekho_dataset_TYPO.csv`.
+2. DAG di-trigger manual → task `extract` gagal (merah), task lain tidak jalan.
+3. Log task `extract` menunjukkan: ![alt text](log_task_failed.png)
+4. Nama file dikembalikan ke `cardekho_dataset.csv`.
+5. DAG di-trigger ulang → semua 4 task hijau. ![alt text](trigger_ulang.png)
+
+Pelajaran: dengan `>>` dependency, kegagalan di `extract` otomatis mencegah `transform`, `load`, dan `analytics` berjalan — data warehouse tidak tercemar data parsial. `retries=1` memberi kesempatan kedua sebelum task dinyatakan gagal.

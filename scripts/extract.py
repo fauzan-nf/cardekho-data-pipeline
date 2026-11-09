@@ -11,8 +11,8 @@ PROCESSED_DIR = Path("data/processed")
 CSV_FILE = RAW_DIR / "cardekho_dataset.csv"
 OUTPUT_FILE = PROCESSED_DIR / "extracted.parquet"
 
-EXPECTED_ROWS = 8128
-EXPECTED_COLS = 8
+EXPECTED_ROWS = 15411
+EXPECTED_COLS = 14
 
 
 def main() -> None:
