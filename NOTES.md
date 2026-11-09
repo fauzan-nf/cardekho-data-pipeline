@@ -20,10 +20,12 @@
 | Outlier `vehicle_age`, `mileage`, `engine`, `max_power` | 0 | Tidak ada — distribusi wajar |
 | Missing values | 0 di semua kolom | Tidak perlu imputasi |
 
-## Definisi Merek (REVISI)
+## Definisi Merek (REVISI FINAL)
 - Merek = kolom `brand` (sudah tersedia, tidak perlu split).
-- Normalisasi: `brand.str.strip().str.title()`.
-- Verifikasi: setelah normalisasi, jumlah unique brand = 31 (dari 32, karena ISUZU → Isuzu).
+- Normalisasi: **mapping eksplisit** (bukan `.str.title()`), karena `.title()` merusak merek berhuruf besar seperti `BMW` → `Bmw`, `MG` → `Mg`, `Mercedes-AMG` → `Mercedes-Amg`.
+- Daftar 31 merek kanonik ada di `scripts/brands.py` (`BRAND_CANONICAL`).
+- Pencocokan case-insensitive: `ISUZU` → `Isuzu`, `isuzu` → `Isuzu`, dst.
+- Jika ada merek baru yang tidak dikenal, `normalize_brand` raise error agar kita sadar dan menambah ke daftar.
 
 ## Keputusan `seats = 0`
 - **Dibiarkan** (2 baris). Tidak menghapus baris dari dataset asli.
@@ -34,5 +36,4 @@
 - Tabel analitik `analytics_harga_per_merek` berisi agregasi brand × vehicle_age.
 - DAG Airflow harian menjalankan extract → transform → load → analytics tanpa error.
 - Query analitik bisa dijalankan dan hasilnya tampil di README.
-- Jumlah baris raw_mobil (15411) = jumlah baris di data/processed (15411);
-  tidak ada baris dihapus pada tahap transform; normalisasi brand tidak mengubah jumlah baris.
+- Jumlah baris raw_mobil (15411) = jumlah baris di data/processed (15411); tidak ada baris dihapus pada tahap transform; normalisasi brand tidak mengubah jumlah baris.
